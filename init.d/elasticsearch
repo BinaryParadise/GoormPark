@@ -1,0 +1,38 @@
+#!/bin/bash
+#chkconfig: 345 63 37
+#description: elasticsearch
+#processname: elasticsearch-6.1.2
+
+export ES_HOME=/usr/share/elasticsearch
+
+case $1 in
+        start)
+                su es<<!
+                cd $ES_HOME
+                ./bin/elasticsearch -d -p pid
+                exit
+!
+                echo "elasticsearch is started"
+                ;;
+        stop)
+                pid=`cat $ES_HOME/pid`
+                kill -9 $pid
+                echo "elasticsearch is stopped"
+                ;;
+        restart)
+                pid=`cat $ES_HOME/pid`
+                kill -9 $pid
+                echo "elasticsearch is stopped"
+                sleep 1
+                su es<<!
+                cd $ES_HOME
+                ./bin/elasticsearch -d -p pid
+                exit
+!
+                echo "elasticsearch is started"
+        ;;
+    *)
+        echo "start|stop|restart"
+        ;;
+esac
+exit 0
